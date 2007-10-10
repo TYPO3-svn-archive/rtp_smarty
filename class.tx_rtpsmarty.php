@@ -43,7 +43,7 @@ class tx_rtpsmarty {
 		// Invoke the smarty wrapper class
 		$smarty = t3lib_div::makeInstance('tx_rtpsmarty_wrapper');
 
-		// Instantiate smarty with the current instance of the Extension class
+		// Instantiate Smarty with the current instance of the Extension class
 		$smarty->startSmarty($this);
 
 		/****
@@ -51,6 +51,8 @@ class tx_rtpsmarty {
 		 * 1. Plugin configuration array in TYPO3_CONF_VARS (default template_dir)
 		 * 2. TypoScript for the Smarty extension (if loaded) in rtp_smarty/static/setup.txt
 		 * 3. Any TypoScript for rtp_smarty from the calling class, e.g. plugin.myPlugin.smarty.template_dir = ...
+		 *    Both pi_base and lib/div scenario are checked for TypoScript, in the lib/div scenario the default
+		 *    path to the templates directory is inherited.
 		 * 4. Any TypoScript passed directly to this function
 		 ****/
 
@@ -59,19 +61,10 @@ class tx_rtpsmarty {
 		 if(is_subclass_of($this,'tslib_pibase')) { // Traditional scenario
 			 $smarty->t3_confVars[$this->prefixId] = $GLOBALS['TSFE']->tmpl->setup['plugin.'][$this->prefixId.'.']['smarty.']; // Smarty configuration from the calling extension
 		 } elseif(is_subclass_of($this,'tx_lib_object')) { // lib/div mvc scenario
+			 $smarty->t3_confVars['lib/div']['template_dir'] = $this->getPathToTemplateDirectory(); // Defined path to templates from lib/div
 			 $smarty->t3_confVars[$this->getExtensionPrefix()] = $this->controller->configurations->get('smarty.'); // Smarty configuration from the calling extension
 		 }
 		 $smarty->t3_confVars['local'] = $localConf;
-
-		/****
-		 * lib/div mvc integration:
-		 * If the parent class is tx_lib_smartyView get the template_dir from
-		 * the defined pathToTemplateDirectory.
-		 ****/
-
-		 if(is_subclass_of($this,'tx_lib_object')) {
-			 $smarty->t3_confVars['lib/div']['template_dir'] = $this->getPathToTemplateDirectory();
-		 }
 
 		/****
 		 * Set Smarty class vars
@@ -81,7 +74,7 @@ class tx_rtpsmarty {
 		 $smarty->t3_conf = array();
 		 foreach($smarty->t3_confVars as $arr) {
 		 	if($arr['pathToTemplateDirectory']) $arr['template_dir'] = ($arr['pathToTemplateDirectory']); // pathToTemplateDirectory is an alias for template_dir
-			$smarty->t3_conf = ($arr)?array_merge($smarty->t3_conf,$arr):$smarty->t3_conf;
+			$smarty->t3_conf = (is_array($arr))?array_merge($smarty->t3_conf,$arr):$smarty->t3_conf;
 		 }
 
 		 // Set Smarty class vars
@@ -104,7 +97,7 @@ class tx_rtpsmarty {
 			 $smarty->t3_extVars = array(
 			 	'prefixId' => $this->getExtensionPrefix(),
 			 	'extKey' => $this->getExtensionPrefix(),
-			 	'extPath' => $this->getExtensionPrefix(),
+			 	'extPath' => $this->getExtensionPath(),
 			 );
 		 }
 
