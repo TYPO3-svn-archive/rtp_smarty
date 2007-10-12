@@ -29,12 +29,17 @@
  * @package 	TYPO3 is Smarter (rtp_smarty)
  **/
 
-// Include Smarty wrapper class
-require_once(t3lib_extMgm::extPath('rtp_smarty').'/class.tx_rtpsmarty_wrapper.php');
 
 class tx_rtpsmarty {
 
 	function &smarty($localConf=array()) {
+
+		/****
+		 * Get and load Smarty
+		 ****/
+
+		tx_rtpsmarty::_getSmarty(); // Check for valid Smarty installation
+		require_once(t3lib_extMgm::extPath('rtp_smarty').'/class.tx_rtpsmarty_wrapper.php'); // Get the Smarty wrapper class
 
 		/****
 		 * Create an instance of smarty
@@ -56,7 +61,7 @@ class tx_rtpsmarty {
 		 * 4. Any TypoScript passed directly to this function
 		 ****/
 
-		 $smarty->t3_confVars['extconf'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['rtp_smarty']; // The default template_dir is defined in the plugin configuration
+		 $smarty->t3_confVars['extconf']['template_dir'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['rtp_smarty']['template_dir']; // The default template_dir is defined in the plugin configuration
 		 $smarty->t3_confVars['rtp_smarty'] = $GLOBALS['TSFE']->tmpl->setup['plugin.']['rtp_smarty.']; // Default Smarty configuration
 		 if(is_subclass_of($this,'tslib_pibase')) { // Traditional scenario
 			 $smarty->t3_confVars[$this->prefixId] = $GLOBALS['TSFE']->tmpl->setup['plugin.'][$this->prefixId.'.']['smarty.']; // Smarty configuration from the calling extension
@@ -125,6 +130,22 @@ class tx_rtpsmarty {
 		return tx_rtpsmarty::smarty($localConf);
 	}
 
+	function _getSmarty() {
+		if(!@file_exists(SMARTY_DIR.'Smarty.class.php')) {
+			// Get default Smarty configuration from ext_conf
+			$smarty_dir = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['rtp_smarty']['smarty_dir'];
+			// Find the main Smarty class file
+			$smarty_dir = preg_replace('%[\\\\|/]$%m', '', $smarty_dir).'/';
+			$smarty_dir = t3lib_div::getFileAbsFileName($smarty_dir,0);
+			$smarty_dir = (@file_exists($smarty_dir.'Smarty.class.php'))?$smarty_dir:$smarty_dir.'libs/'; // Choose subdirectory 'libs'.
+			// Check for valid Smarty installation or die!
+			if(@file_exists($smarty_dir.'Smarty.class.php')) {
+				define('SMARTY_DIR',$smarty_dir);
+			} else {
+				die('Sorry, but I can\'t find Smarty in:<br /><span style="color:red;">'.$smarty_dir.'</span><br />Please check your configuration and try again.');
+			}
+		}
+	}
 
 
 }

@@ -1,6 +1,6 @@
 
   # cat=basic//40; type=string; label= Path to your Smarty installation: The default Smarty installation is located in EXT:rtp_smarty/smarty-2.6.18. If your smarty installation is located elsewhere on the server or if you have upgraded your Smarty version change the path to the Smarty installation here.
-smarty_dir = EXT:rtp_smarty/smarty-2.6.18
+smarty_dir = EXT:rtp_smarty/Smarty-2.6.18
 
   # cat=basic//40; type=string; label= Path to your Smarty templates: Default location of your Smarty templates. You can modify the path to your Smarty templates directory in your extension if required.
 template_dir = fileadmin/smarty
