@@ -41,9 +41,9 @@
  * Version: 1.0
  * Author:  Simon Tuck <stu@rtpartner.ch>, Rueegg Tuck Partner GmbH
  * Purpose: Translate a block of text from the current TYPO3 language library (e.g. locallang.xml)
- * Example: {LLL alt="Please enter your name" key="enter_name"}Your name{/LLL}
- * Note:	The parameter 'key' refers to the label xml file. If you do not provide a key
- * 			the content between the tags will be used as the key.
+ * Example: {LLL alt="Please enter your name" label="enter_name"}Your name{/LLL}
+ * Note:	The parameter 'label' refers to the label in the xml file. If you do not provide a label
+ * 			the content between the tags will be used as the label.
  * Note:	The 'alt' parameter enables you to provide an alternative text if no translation was found.
  * Note:	If the translated text contains Smarty variables it will be cycled through Smarty again!
  *			That means you can include Smarty tags in your language library
@@ -58,7 +58,7 @@
 		$params = array_change_key_case($params,CASE_LOWER);
 
 		// Key for looking up the translation in the language file
-		$key = ($params['key'])?$params['key']:$content;
+		$key = ($params['label'])?$params['label']:$content;
 
 		// Get the language file and/or label information from the key
 		$parts = t3lib_div::trimExplode(':',$key,1);

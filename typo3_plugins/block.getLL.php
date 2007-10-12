@@ -41,9 +41,9 @@
  * Version: 2.0
  * Author:  Simon Tuck <stu@rtpartner.ch>, Rueegg Tuck Partner GmbH
  * Purpose: Translate a block of text from the current TYPO3 language library (e.g. locallang.xml)
- * Example: {getLL alt="Please enter your name" key="enter_name"}Your name{/getLL}
+ * Example: {getLL alt="Please enter your name" label="enter_name"}Your name{/getLL}
  * Note:	The Smarty "getLL" tag is an alias for the "LLL" tag
- * Note:	The parameter 'key' refers to the label xml file. If you do not provide a key
+ * Note:	The parameter 'label' refers to the label xml file. If you do not provide a key
  * 			the content between the tags will be used as the key.
  * Note:	The 'alt' parameter enables you to provide an alternative text if no translation was found.
  * Note:	If the translated text contains Smarty variables it will be cycled through Smarty again!

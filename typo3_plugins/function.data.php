@@ -42,10 +42,10 @@
  * Author:  Simon Tuck <stu@rtpartner.ch>, Rueegg Tuck Partner GmbH
  * Purpose: Implements the TypoScript data type "getText". For details check
  * 			http://typo3.org/documentation/document-library/references/doc_core_tsref/current/view/2/2/
- * Example: {data key="page:title"} Gets the current page title
- * Example: {data key="DB:tt_content:234:header"} Gets the header for content id 234
- * Example: {data key="DB:TSFE:lang"} Gets the current language key
- * Note:	Use the parameter "key" to define the type & pointer for the getText function
+ * Example: {data source="page:title"} Gets the current page title
+ * Example: {data source="DB:tt_content:234:header"} Gets the header for content id 234
+ * Example: {data source="DB:TSFE:lang"} Gets the current language key
+ * Note:	Use the parameter "source" to define the type & pointer for the getText function
  * -------------------------------------------------------------
  *
  **/
@@ -54,8 +54,8 @@
 	function smarty_function_data($params, &$smarty) {
 		if (!method_exists($smarty->cObj,'getData')) return FALSE; // Check availability of getData function
 		$params = array_change_key_case($params,CASE_LOWER); // Make sure params are lowercase
-		if ($params['key']){
-			return $smarty->cObj->getData($params['key']); // Return result from getData
+		if ($params['source']){
+			return $smarty->cObj->getData($params['source']); // Return result from getData
 		}
 	}
 

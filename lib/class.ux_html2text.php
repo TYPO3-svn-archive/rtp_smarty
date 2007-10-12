@@ -29,12 +29,13 @@
  * @package 	TYPO3 is Smarter (rtp_smarty)
  **/
 
-// Include custome debug class
+// Include html2text class
 require_once(t3lib_extMgm::extPath('rtp_smarty').'lib/class.html2text.php');
 
 class ux_html2text extends html2text {
 
     var $appendLinks = false;
+    var $stripLinks = false;
     var $stripLines = false;
 
     function _convert() {
@@ -57,7 +58,7 @@ class ux_html2text extends html2text {
         }
 
         // Add link list
-        if ( !empty($this->_link_list) && $this->appendLinks) {
+        if ( !empty($this->_link_list) && $this->appendLinks && !$this->stripLinks) {
             $text .= "\n\nLinks:\n------\n" . $this->_link_list;
         }
 
@@ -73,10 +74,58 @@ class ux_html2text extends html2text {
         $this->_converted = true;
     }
 
+    /**
+     *  Helper function called by preg_replace() on link replacement.
+     *
+     *  Maintains an internal list of links to be displayed at the end of the
+     *  text, with numeric indices to the original point in the text they
+     *  appeared. Also makes an effort at identifying and handling absolute
+     *  and relative links.
+     *
+     *  @param string $link URL of the link
+     *  @param string $display Part of the text to associate number with
+     *  @access private
+     *  @return string
+     */
+    function _build_link_list( $link, $display )
+    {
+        if ( substr($link, 0, 7) == 'http://' || substr($link, 0, 8) == 'https://' ||
+             substr($link, 0, 7) == 'mailto:' ) {
+            $this->_link_count++;
+            $this->_link_list .= "[" . $this->_link_count . "] $link\n";
+// XXX: Changed definition of $additional
+            $additional = $this->_build_additional($link);
+        } elseif ( substr($link, 0, 11) == 'javascript:' ) {
+            // Don't count the link; ignore it
+            $additional = '';
+        // what about href="#anchor" ?
+        } else {
+            $this->_link_count++;
+            $this->_link_list .= "[" . $this->_link_count . "] " . $this->url;
+            if ( substr($link, 0, 1) != '/' ) {
+                $this->_link_list .= '/';
+            }
+            $this->_link_list .= "$link\n";
+// XXX: Changed definition of $additional
+			$additional = $this->_build_additional($this->url);
+        }
+
+        return $display . $additional;
+    }
+
+    function _build_additional($link) {
+        if($this->stripLinks) {
+        	return '';
+        } elseif($this->appendLinks) {
+        	return ' [' . $this->_link_count . ']';
+        }
+        return ' [' . $link . ']';
+    }
+
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/rtp_smarty/class.ux_html2text.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/rtp_smarty/class.ux_html2text.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/rtp_smarty/lib/class.ux_html2text.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/rtp_smarty/lib/class.ux_html2text.php']);
 }
 
 ?>

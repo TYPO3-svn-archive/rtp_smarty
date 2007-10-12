@@ -46,23 +46,45 @@
  *				This is another line of text
  *				But this will all end up on 1 line...
  *			{/plaintext}
- * Note:	To preserve linebreaks set the parameter "stripLines"
- * 			(otherwise multiple linebreaks are collapsed)
- * Note:	To append a list of links at the end of the text block as
- * 			footnotes set the parameter "appendlinks"
+ * Note:	By default multiple linebreaks are collapsed. To preserve linebreaks
+ * 			set the parameter 'newlines' to 'keep' (newlines="keep")
+ * Note:	By default links are printed in plaintext. To append a list of links
+ * 			in the text to the end of the text block set the paramter 'links' to 'append'
+ * 			(links="append").
+ * 			To remove links from the text entirely set the parameter 'links' to 'strip'
+ * 			(links="strip")
  * -------------------------------------------------------------
  *
  **/
 
 
  	// Include extended version of html2text class
- 	require_once(t3lib_extMgm::extPath('rtp_smarty').'class.ux_html2text.php');
+ 	require_once(t3lib_extMgm::extPath('rtp_smarty').'lib/class.ux_html2text.php');
 
 	function smarty_block_plaintext($params, $content, &$smarty) {
 		$params = array_change_key_case($params);
 		$textConversion = new ux_html2text($content);
-		if($params['striplines']) $textConversion->stripLines = true;
-		if($params['appendlinks']) $textConversion->appendLinks = true;
+		switch(strtolower($params['newlines'])) {
+			case 'keep':
+				$textConversion->stripLines = false;
+				break;
+			default:
+				$textConversion->stripLines = true;
+				break;
+		}
+		switch(strtolower($params['links'])) {
+			case 'strip':
+				$n = array_search('$this->_build_link_list("\\1", "\\2")', $textConversion->replace);
+				if($n) $textConversion->replace[$n] = '';
+				$textConversion->stripLinks = true;
+				break;
+			case 'append':
+				$textConversion->appendLinks = true;
+				break;
+			default:
+				$textConversion->appendLinks = false;
+				break;
+		}
 		return $textConversion->get_text();
 	}
 
