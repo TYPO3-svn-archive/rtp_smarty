@@ -63,7 +63,13 @@
 
 	function smarty_block_plaintext($params, $content, &$smarty) {
 		$params = array_change_key_case($params);
-		$textConversion = new ux_html2text($content);
+		$textConversion = new ux_html2text($content); // New instance of html2text
+
+		// Set the absolute site path
+		$baseUrl = preg_replace('%([\\\\|/]*$)%', '', $GLOBALS['TSFE']->baseUrl).'/';
+		$textConversion->set_base_url($baseUrl);
+
+		// Eval plugin parameters
 		switch(strtolower($params['newlines'])) {
 			case 'keep':
 				$textConversion->stripLines = false;
@@ -85,6 +91,8 @@
 				$textConversion->appendLinks = false;
 				break;
 		}
+
+		// Return plaintext
 		return $textConversion->get_text();
 	}
 
