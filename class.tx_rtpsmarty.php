@@ -45,7 +45,7 @@ class tx_rtpsmarty {
 		 * Create an instance of smarty
 		 ****/
 
-		// Invoke the smarty wrapper class
+		// Invoke the Smarty wrapper class
 		$smarty = t3lib_div::makeInstance('tx_rtpsmarty_wrapper');
 
 		// Instantiate Smarty with the current instance of the Extension class
@@ -88,7 +88,7 @@ class tx_rtpsmarty {
 		 }
 
 		/****
-		 * Save extension infos for debug screen
+		 * Save extension infos for debug console
 		 ****/
 
 		// Save extension infos for the debug console
@@ -146,7 +146,6 @@ class tx_rtpsmarty {
 			}
 		}
 	}
-
 
 }
 

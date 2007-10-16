@@ -41,7 +41,7 @@
  * Version: 1.0
  * Author:  Simon Tuck <stu@rtpartner.ch>, Rueegg Tuck Partner GmbH
  * Purpose: Displays any object from global TS (such as IMAGE, COA, TEXT, etc.)
- * Example:	{image file="fileadmin/pic.jpg" width="150" }
+ * Example:	{image file="fileadmin/pic.jpg" file.width="150" }
  * Example:	{image setup="lib.myImage" file.width="150c" file.height="180c"}
  * Note:	You can add any property valid for the TypoScript IMAGE object,
  *			For example, file="fileadmin/pic.jpg" or width="150" or file.height="180c" etc.

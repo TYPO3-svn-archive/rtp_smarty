@@ -33,31 +33,31 @@
 
 /**
  *
- * Smarty plugin "rte"
+ * Smarty plugin "translate"
  * -------------------------------------------------------------
- * File:    modifier.rte.php
- * Type:    modifier
- * Name:    RTE Format
- * Version: 1.0
+ * File:    block.translate.php
+ * Type:    block
+ * Name:    Translate
+ * Version: 2.0
  * Author:  Simon Tuck <stu@rtpartner.ch>, Rueegg Tuck Partner GmbH
- * Purpose: Formats a variable according to lib.parseFunc_RTE
- * Example: {$assignedPHPvariable|rte}
- * Note:	For more details on lib.parseFunc_RTE & parseFunc in general see:
- *			http://typo3.org/documentation/document-library/references/doc_core_tsref/4.1.0/view/5/14/
- * Note:	To define an alternate parseFunc configuration set the paramater "parsefunc"
- *			in the tag e.g. {$assignedPHPvariable|rte:"lib.myParseFunc"}
+ * Purpose: Translate a block of text from the current TYPO3 language library (e.g. locallang.xml)
+ * Example: {translate alt="Please enter your name" label="enter_name"}Your name{/translate}
+ * Note:	The Smarty "translate" tag is an alias for the "LLL" tag
+ * Note:	The parameter 'label' refers to the label xml file. If you do not provide a key
+ * 			the content between the tags will be used as the key.
+ * Note:	The 'alt' parameter enables you to provide an alternative text if no translation was found.
+ * Note:	If the translated text contains Smarty variables it will be cycled through Smarty again!
+ *			That means you can include Smarty tags in your language library
  * -------------------------------------------------------------
  *
  **/
 
 
-	function smarty_modifier_rte($text, $parsefunc=false) {
-		if ($parsefunc) {
-			// Process the content with the defined parseFunc configuration
-			return $smarty->cObj->parseFunc($text,'','<'.$parsefunc);
+	function smarty_block_getLL($params, $content, &$smarty) {
+		if($funcName = $smarty->getAndLoadPlugin('block','LLL')) { // getLL is an alias for LLL
+			return $funcName($params, $content, $smarty);
 		} else {
-			// Process the content with default RTE parseFunc configuration
-			return $smarty->cObj->parseFunc($text,$GLOBALS['TSFE']->tmpl->setup['lib.']['parseFunc_RTE.']);
+			return ($params['alt'])?$params['alt']:$content;
 		}
 	}
 

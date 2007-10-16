@@ -88,7 +88,7 @@ class tx_rtpsmarty_div {
 		return $diffDirsDown.$diffDirsUp;
 	}
 
-	// Retrieves a TypoScript object from the global setupo scope ($GLOBALS['TSFE']->tmpl->setup)
+	// Retrieves a TypoScript object from the global setup scope ($GLOBALS['TSFE']->tmpl->setup)
 	function getTypoScriptFromTMPL($key) {
 		if(!$key) return false;
 		$ts_parser = t3lib_div::makeInstance('t3lib_tsparser');

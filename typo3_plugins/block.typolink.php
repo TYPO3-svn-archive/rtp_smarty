@@ -65,6 +65,9 @@
 		// Make sure there is a valid instance of tslib_cObj
 		if (!method_exists($smarty->cObj,'typolink')) return FALSE;
 
+		// Catch the keyword _self to create a link to the current page
+		if($params['parameter']) $params['parameter'] = preg_replace('/^_self\b/im', $GLOBALS['TSFE']->id, $params['parameter']);
+
 		// Get TypoScript from $params
 		$setup = tx_rtpsmarty_div::getTypoScriptFromParams($params);
 
