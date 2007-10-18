@@ -53,7 +53,7 @@
  **/
 
 
-	function smarty_block_getLL($params, $content, &$smarty) {
+	function smarty_block_translate($params, $content, &$smarty) {
 		if($funcName = $smarty->getAndLoadPlugin('block','LLL')) { // getLL is an alias for LLL
 			return $funcName($params, $content, $smarty);
 		} else {
